@@ -16,3 +16,18 @@ func NewCommander(bot *tgbotapi.BotAPI, weatherService *weather.Service) *Comman
 		weatherService: weatherService,
 	}
 }
+
+func (c *Commander) HandleUpdate(update tgbotapi.Update) {
+	if update.Message == nil {
+		return
+	}
+
+	switch update.Message.Command() {
+	case "help":
+		c.Help(update.Message)
+	case "weather":
+		c.CurrentWeather(update.Message)
+	default:
+		c.Default(update.Message)
+	}
+}

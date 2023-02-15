@@ -33,17 +33,6 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
-
-		switch update.Message.Command() {
-		case "help":
-			commander.Help(update.Message)
-		case "weather":
-			commander.CurrentWeather(update.Message)
-		default:
-			commander.Default(update.Message)
-		}
+		commander.HandleUpdate(update)
 	}
 }

@@ -5,10 +5,10 @@ type WeatherList struct {
 }
 
 type WeatherUnit struct {
-	//Timestamp         time.Time          `json:"dt"`
-	MainInfo          MainInfo           `json:"main"`
-	WeatherDecription WeatherDescription `json:"weather"`
-	Wind              Wind               `json:"wind"`
+	Timestamp         int64                `json:"dt"`
+	MainInfo          MainInfo             `json:"main"`
+	WeatherDecription []WeatherDescription `json:"weather"`
+	Wind              Wind                 `json:"wind"`
 }
 type Wind struct {
 	Speed  float64 `json:"speed"` // Wind speed in meter/sec

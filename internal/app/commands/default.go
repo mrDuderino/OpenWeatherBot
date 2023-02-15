@@ -5,7 +5,7 @@ import (
 )
 
 func (c *Commander) Default(inputMessage *tgbotapi.Message) {
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, inputMessage.Text)
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "I don't understand you")
 	msg.ReplyToMessageID = inputMessage.MessageID
 	c.bot.Send(msg)
 }

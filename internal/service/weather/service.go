@@ -3,6 +3,8 @@ package weather
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -18,16 +20,20 @@ func NewService() *Service {
 }
 
 func (s *Service) Show(cityName string) *WeatherList {
-	jsonData := WeatherCommandHandler(cityName)
+	jsonData, err := WeatherCommandHandler(cityName)
+	if err != nil {
+		return nil
+	}
 	wl := &WeatherList{}
-	err := json.Unmarshal(jsonData, wl)
+	err = json.Unmarshal(jsonData, wl)
 	if err != nil {
 		log.Println(err)
 	}
+	log.Printf("%#+v", *wl)
 	return wl
 }
 
-func WeatherCommandHandler(city string) []byte {
+func WeatherCommandHandler(city string) ([]byte, error) {
 	httpClient := &http.Client{Timeout: 5 * time.Second}
 	ctxBase := context.Background()
 	ctx, cancel := context.WithTimeout(ctxBase, time.Second*5)
@@ -40,8 +46,11 @@ func WeatherCommandHandler(city string) []byte {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 200 {
+		return nil, errors.New(fmt.Sprintf("City %s is not exist!", city))
+	}
 	respBody, _ := io.ReadAll(resp.Body)
-	return respBody
+	return respBody, nil
 }
 
 func requestBuilder(ctx context.Context, cityName string) *http.Request {
